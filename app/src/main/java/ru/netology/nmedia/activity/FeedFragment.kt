@@ -49,14 +49,13 @@ class FeedFragment : Fragment() {
                     Intent.createChooser(intent, getString(R.string.chooser_share_post))
                 startActivity(shareIntent)
             }
+
             override fun onLike(post: Post) {
                 viewModel.likeById(post.id)
-                viewModel.loadPosts()
             }
 
             override fun onDeleteLike(post: Post) {
                 viewModel.unlikeById(post.id)
-                viewModel.loadPosts()
             }
         })
         binding.list.adapter = adapter

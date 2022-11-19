@@ -25,7 +25,7 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     private val _data = MutableLiveData(FeedModel())
     val data: LiveData<FeedModel>
         get() = _data
-    val edited = MutableLiveData(empty)
+    private val edited = MutableLiveData(empty)
     private val _postCreated = SingleLiveEvent<Unit>()
     val postCreated: LiveData<Unit>
         get() = _postCreated
@@ -72,13 +72,25 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     fun likeById(id: Long) {
         thread {
-            repository.likeById(id)
+            val likedPost = repository.likeById(id)
+            _data.postValue(
+                _data.value?.copy(
+                    posts = _data.value?.posts.orEmpty()
+                        .map { if (it.id == id) likedPost else it }
+                )
+            )
         }
     }
 
     fun unlikeById(id: Long) {
         thread {
-            repository.unlikeById(id)
+            val unlikedPost = repository.unlikeById(id)
+            _data.postValue(
+                _data.value?.copy(
+                    posts = _data.value?.posts.orEmpty()
+                        .map { if (it.id == id) unlikedPost else it }
+                )
+            )
         }
     }
 
