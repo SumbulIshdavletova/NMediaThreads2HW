@@ -17,6 +17,7 @@ interface OnInteractionListener {
     fun onRemove(post: Post) {}
     fun onShare(post: Post) {}
     fun onDeleteLike(post: Post) {}
+    fun onRefreshListener(post: Post) {}
 }
 
 class PostsAdapter(
@@ -82,6 +83,7 @@ class PostViewHolder(
                 onInteractionListener.onShare(post)
             }
         }
+
     }
 }
 

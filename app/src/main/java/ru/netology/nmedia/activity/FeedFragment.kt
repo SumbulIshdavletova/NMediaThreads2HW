@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import ru.netology.nmedia.R
 import ru.netology.nmedia.adapter.OnInteractionListener
 import ru.netology.nmedia.adapter.PostsAdapter
@@ -20,7 +21,7 @@ import ru.netology.nmedia.viewmodel.PostViewModel
 class FeedFragment : Fragment() {
 
     private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
-
+    lateinit var swipeContainer: SwipeRefreshLayout
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,8 +58,18 @@ class FeedFragment : Fragment() {
             override fun onDeleteLike(post: Post) {
                 viewModel.unlikeById(post.id)
             }
+
+            override fun onRefreshListener(post: Post) {
+                viewModel.loadPosts()
+            }
         })
         binding.list.adapter = adapter
+
+        swipeContainer = binding.swipeRefreshLayout
+
+        swipeContainer.setOnRefreshListener {
+            viewModel.loadPosts()
+        }
 
         viewModel.data.observe(viewLifecycleOwner) { state ->
             adapter.submitList(state.posts)
